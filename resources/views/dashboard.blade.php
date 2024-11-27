@@ -12,8 +12,21 @@
                
             <!-- ADD STUDENT FORM -->
             <div class="mb-6">
+            @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">{{ session('success') }}</strong>
+                <span class="block sm:inline">Student has been added successfully.</span>
+            @endif
+            @if(session('delete'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">{{ session('delete') }}</strong>
+                <span class="block sm:inline">Student has been deleted successfully.</span>
+            @endif
+            </div>
+
+
                 <h3 class="text-lg font-medium mb-4">Add New Student</h3>
-                <form method="POST" action="#">
+                <form method="POST" action="{{ route('student.store') }}">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -55,17 +68,25 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($students as $key=> $student)
                         <tr>
-                            <td class="py-2 border-b px-14">1</td>
-                            <td class="py-2 border-b px-14">John Doe</td>
-                            <td class="py-2 border-b px-14">johndoe@example.com</td>
-                            <td class="py-2 border-b px-14">123-456-7890</td>
-                            <td class="py-2 border-b px-14">123 Main St.</td>
+                            <td class="py-2 border-b px-4 text-center">{{ $key + 1 }}</td>
+                            <td class="py-2 border-b px-14">{{ $student->name }}</td>
+                            <td class="py-2 border-b px-14">{{ $student->email }}</td>
+                            <td class="py-2 border-b px-14">{{ $student->phone }}</td>
+                            <td class="py-2 border-b px-14">{{ $student->address }}</td>
+                            <td class="py-2 border-b px-4"></td>
                             <td class="py-2 border-b px-14">
                                 <a href="#" class="text-blue-500 hover:text-blue-700">Edit</a>
-                                <a href="#" class="text-red-500 hover:text-red-700">Delete</a>
+                                <form method="POST" action="{{ route('student.destroy', $student->id) }}" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                                </forn>
                             </td>
                         </tr>
+                        @endforeach
+                      
                     </tbody>
                 </table>
             </div>
